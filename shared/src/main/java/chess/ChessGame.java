@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -81,9 +82,15 @@ public class ChessGame {
         }
 
         Collection<ChessMove> validMoves = validMoves(start);
+        if(validMoves == null || !validMoves.contains(move) ){
+            throw new InvalidMoveException("Invalid Move");
+        }
 
-        board.addPiece(move.getEndPosition(), piece);
-        board.addPiece(null, piece);
+        ChessPosition end = move.getEndPosition();
+        board.addPiece(end, piece);
+        board.addPiece(start, null);
+
+
 
         currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
@@ -137,5 +144,19 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return currentTurn == chessGame.currentTurn && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentTurn, board);
     }
 }

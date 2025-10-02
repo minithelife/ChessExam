@@ -36,6 +36,30 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
+    public ChessBoard copy(){
+        ChessBoard newBoard = new ChessBoard();
+        for(int row = 1; row <= 8; row++){
+            for(int col = 1; col <= 8; col++){
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = this.getPiece(pos);
+                if(piece != null){
+                    newBoard.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+                }
+            }
+        }
+        return newBoard;
+    }
+
+    public void movePiece(ChessMove move){
+        ChessPiece piece = getPiece(move.getStartPosition());
+        addPiece(move.getStartPosition(), null);
+        if(move.getPromotionPiece() != null){
+            addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+        }else{
+            addPiece(move.getEndPosition(), null);
+        }
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)

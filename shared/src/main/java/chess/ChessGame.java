@@ -93,24 +93,34 @@ public class ChessGame {
      * Checks if a team is in checkmate.
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        if (!isInCheck(teamColor)) return false;
 
+        // if no legal moves exist, it's checkmate
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!validMoves(pos).isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
      * Checks if a team is in stalemate.
      */
-    public boolean isInStalemate(TeamColor teamColor) {
 
-    }
 
     // ----------------- Helper Methods -----------------
 
     /**
      * Apply a move to a given board (does not check legality).
      */
-    private void makeMoveOnBoard(ChessBoard b, ChessMove move) {
 
-    }
 
     /**
      * Check if a team is in check on a given board state.

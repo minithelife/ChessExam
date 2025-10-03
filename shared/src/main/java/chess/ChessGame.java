@@ -113,14 +113,41 @@ public class ChessGame {
     /**
      * Checks if a team is in stalemate.
      */
+    public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheck(teamColor)) return false;
 
+        // if no legal moves but not in check, stalemate
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!validMoves(pos).isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     // ----------------- Helper Methods -----------------
 
     /**
      * Apply a move to a given board (does not check legality).
      */
+    private void makeMoveOnBoard(ChessBoard b, ChessMove move) {
+        ChessPiece movingPiece = b.getPiece(move.getStartPosition());
 
+        // handle promotion
+        if (move.getPromotionPiece() != null) {
+            movingPiece = new ChessPiece(movingPiece.getTeamColor(), move.getPromotionPiece());
+        }
+
+        // move the piece
+        b.addPiece(move.getEndPosition(), movingPiece);
+        b.addPiece(move.getStartPosition(), null); // clear old square
+    }
 
     /**
      * Check if a team is in check on a given board state.
@@ -166,14 +193,7 @@ public class ChessGame {
 
     // ----------------- Object Overrides -----------------
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessGame)) return false;
-        ChessGame chessGame = (ChessGame) o;
-        return currentTurn == chessGame.currentTurn &&
-                Objects.equals(board, chessGame.board);
-    }
+
 
     @Override
     public int hashCode() {

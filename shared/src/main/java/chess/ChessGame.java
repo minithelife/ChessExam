@@ -179,7 +179,13 @@ public class ChessGame {
     private ChessPosition findKing(TeamColor teamColor, ChessBoard b) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
-
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = b.getPiece(pos);
+                if (piece != null &&
+                        piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    return pos;
+                }
             }
         }
         return null;
